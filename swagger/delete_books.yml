@@ -1,0 +1,25 @@
+tags:
+  - Books
+parameters:
+  - name: isbn
+    in: path
+    required: true
+    type: string
+    description: The ISBN of the book to delete
+responses:
+  200:
+    description: Book deleted successfully
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Book deleted
+  404:
+    description: Book not found
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Book not found

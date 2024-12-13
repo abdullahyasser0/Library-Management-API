@@ -1,0 +1,13 @@
+# Core dependencies
+Flask==2.3.2
+flasgger==0.9.5
+
+# Testing dependencies
+pytest==7.4.2
+pytest-cov==4.1.0
+
+# Linting dependencies
+flake8==6.1.0
+
+# Optional dependencies for development
+Werkzeug==2.3.7

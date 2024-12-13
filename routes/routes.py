@@ -37,8 +37,3 @@ def update_book(isbn):
     updates = request.get_json()
     books[isbn].update(updates)
     return jsonify({"message": "Book updated", "book": books[isbn]}), 200
-
-
-
-def anabatates():
-    print("kak")

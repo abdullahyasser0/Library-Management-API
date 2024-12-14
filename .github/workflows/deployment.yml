@@ -1,0 +1,33 @@
+name: Deploy to Azure
+
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  deploy-to-azure:
+    name: Deploy to Azure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Build and Push Docker Image
+        run: |
+          az acr build --registry ${{ secrets.AZURE_REGISTRY_NAME }} --image lms-api:latest .
+
+      - name: Deploy to Azure Web App
+        run: |
+          az webapp config container set --name ${{ secrets.AZURE_WEBAPP_NAME }} \
+                                         --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+                                         --docker-custom-image-name ${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io/lms-api:latest \
+                                         --docker-registry-server-url https://${{ secrets.AZURE_REGISTRY_NAME }}.azurecr.io \
+                                         --docker-registry-server-user ${{ secrets.AZURE_REGISTRY_USERNAME }} \
+                                         --docker-registry-server-password ${{ secrets.AZURE_REGISTRY_PASSWORD }}

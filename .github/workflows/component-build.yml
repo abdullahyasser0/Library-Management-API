@@ -1,0 +1,29 @@
+name: Component Build Workflow
+
+on:
+  push:
+    branches:
+      - backend
+
+jobs:
+  test-and-build:
+    name: Test and Build Backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Tests
+        run: pytest tests/
+
+      - name: Build Docker Image
+        run: |
+          docker build -t library-managment-api .

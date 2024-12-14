@@ -11,10 +11,10 @@ books = {}
 @swag_from('../swagger/add_book.yml')
 def add_book():   
     data = request.get_json()
-    if not all(k in data for k in ('title', 'author', 'published_year', 'isbn')):
-        return jsonify({"error": "Missing required fields"}), 400
+    if not all(key in data for key in ('title', 'author', 'published_year', 'isbn')):
+        return jsonify({"error": "Missing required fields"}), 400 # 400 means bad response 
     books[data['isbn']] = data
-    return {"message": "Book added"}, 201
+    return {"message": "book added"}, 201 #201 means created 
 
 @app.route('/books', methods=['GET'])
 @swag_from('../swagger/list_books.yml')
@@ -25,22 +25,26 @@ def list_books():
 @swag_from('../swagger/search_books.yml')
 def search_books():
     filters = request.args
-    filtered_books = [book for book in books.values() if all(
-        str(book.get(k)) == v for k, v in filters.items())]
+    filtered_books = []
+    for book in books.values():
+        if all(str(book.get(key)) == value for key, value in filters.items()):
+            filtered_books.append(book)
+
     return jsonify(filtered_books), 200
 
 @app.route('/books/<string:isbn>', methods=['DELETE'])
 @swag_from('../swagger/delete_books.yml')
 def delete_book(isbn):
     if isbn not in books:
-        return jsonify({"error": "Book not found"}), 404
+        return jsonify({"error": "book not found"}), 404
     del books[isbn]
-    return jsonify({"message": "Book deleted"}), 200
+    return jsonify({"message": "book deleted"}), 200
 
 @app.route('/books/<string:isbn>', methods=['PUT'])
+@swag_from('../swagger/update_book.yml')
 def update_book(isbn):
     if isbn not in books:
-        return jsonify({"error": "Book not found"}), 404
+        return jsonify({"error": "book not found"}), 404
     updates = request.get_json()
     books[isbn].update(updates)
-    return jsonify({"message": "Book updated", "book": books[isbn]}), 200
+    return jsonify({"message": "book updated", "bokk": books[isbn]}), 200

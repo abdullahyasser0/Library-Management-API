@@ -26,8 +26,9 @@ def list_books():
 def search_books():
     filters = request.args
     filtered_books = []
+
     for book in books.values():
-        if all(str(book.get(key)) == value for key, value in filters.items()):
+        if all(str(book.get(key)) == str(value) for key, value in filters.items()):
             filtered_books.append(book)
 
     return jsonify(filtered_books), 200
